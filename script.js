@@ -1,10 +1,10 @@
-mapboxgl.accessToken = 'pk.eyJ1IjoiZGVyZXBlbnRlIiwiYSI6ImNtOTdldXc5cjA2ejgybG9qaW42dDExaGYifQ.b_Hz-h8WCb_sUhCASAD5xw';
-const map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/dark-v10',
-  center: [139.6917, 35.6895], // Tokyo default
-  zoom: 3
-});
+const map = L.map('map').setView([35.6895, 139.6917], 3); // Tokyo center
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
 
 document.getElementById('photoInput').addEventListener('change', handleUpload);
 
@@ -13,18 +13,17 @@ function handleUpload(e) {
   files.forEach(file => {
     const reader = new FileReader();
     reader.onload = async (evt) => {
-      const exif = await getExifData(evt.target.result);
-      if (exif?.lat && exif?.lng) {
-        new mapboxgl.Marker()
-          .setLngLat([exif.lng, exif.lat])
-          .addTo(map);
+      try {
+        const exif = await exifr.gps(evt.target.result);
+        if (exif?.latitude && exif?.longitude) {
+          L.marker([exif.latitude, exif.longitude]).addTo(map);
+        } else {
+          alert('No GPS data found in ' + file.name);
+        }
+      } catch (err) {
+        console.error('Error reading EXIF data', err);
       }
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
   });
-}
-
-async function getExifData(dataURL) {
-  // You’ll use something like exifr.js to extract GPS
-  return { lat: 35.6895, lng: 139.6917 }; // Stub for now
 }
