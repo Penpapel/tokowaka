@@ -2,8 +2,9 @@ body, html {
   margin: 0;
   padding: 0;
   background-color: black;
-  font-family: 'Zen Kaku Gothic', sans-serif;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
   color: white;
+  height: 100%;
 }
 
 #map {
@@ -11,16 +12,22 @@ body, html {
   top: 0;
   bottom: 0;
   width: 100%;
+  z-index: 1;
 }
 
 #photoInput {
   position: absolute;
   top: 20px;
   left: 20px;
-  z-index: 10;
+  z-index: 1000;
   background: white;
   color: black;
   border: none;
   padding: 10px;
   cursor: pointer;
+  border-radius: 5px;
+}
+
+#photoInput:hover {
+  background: #e0e0e0;
 }
