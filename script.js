@@ -6,24 +6,15 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 19
 }).addTo(map);
 
-document.getElementById('photoInput').addEventListener('change', handleUpload);
+// Example image data (simulate reading from GitHub repo folder)
+const imageData = [
+  { name: 'tokyo.jpg', lat: 35.6895, lng: 139.6917 },
+  { name: 'kyoto.jpg', lat: 35.0116, lng: 135.7681 },
+  { name: 'osaka.jpg', lat: 34.6937, lng: 135.5023 }
+];
 
-function handleUpload(e) {
-  const files = Array.from(e.target.files);
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = async (evt) => {
-      try {
-        const exif = await exifr.gps(evt.target.result);
-        if (exif?.latitude && exif?.longitude) {
-          L.marker([exif.latitude, exif.longitude]).addTo(map);
-        } else {
-          alert('No GPS data found in ' + file.name);
-        }
-      } catch (err) {
-        console.error('Error reading EXIF data', err);
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  });
-}
+imageData.forEach(photo => {
+  const imagePath = `images/${photo.name}`;
+  const marker = L.marker([photo.lat, photo.lng]).addTo(map);
+  marker.bindPopup(`<img class="thumbnail" src="${imagePath}" alt="${photo.name}">`);
+});
