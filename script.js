@@ -1,4 +1,4 @@
-const map = L.map('map').setView([35.6895, 139.6917], 3); // Tokyo center
+const map = L.map('map').setView([35.6895, 139.6917], 3); // Default center
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -6,15 +6,24 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 19
 }).addTo(map);
 
-// Example image data (simulate reading from GitHub repo folder)
-const imageData = [
-  { name: 'tokyo.jpg', lat: 35.6895, lng: 139.6917 },
-  { name: 'kyoto.jpg', lat: 35.0116, lng: 135.7681 },
-  { name: 'osaka.jpg', lat: 34.6937, lng: 135.5023 }
+const imageFilenames = [
+  'photo1.jpg',
+  'photo2.jpg',
+  'photo3.jpg'
 ];
 
-imageData.forEach(photo => {
-  const imagePath = `Images/${photo.name}`;
-  const marker = L.marker([photo.lat, photo.lng]).addTo(map);
-  marker.bindPopup(`<img class="thumbnail" src="${imagePath}" alt="${photo.name}">`);
+imageFilenames.forEach(filename => {
+  const imagePath = `Images/${filename}`;
+  fetch(imagePath)
+    .then(res => res.blob())
+    .then(blob => exifr.gps(blob))
+    .then(gps => {
+      if (gps && gps.latitude && gps.longitude) {
+        const marker = L.marker([gps.latitude, gps.longitude]).addTo(map);
+        marker.bindPopup(`<img class="thumbnail" src="${imagePath}" alt="${filename}">`);
+      } else {
+        console.warn('No GPS data found for', filename);
+      }
+    })
+    .catch(err => console.error('Error loading image or EXIF:', err));
 });
