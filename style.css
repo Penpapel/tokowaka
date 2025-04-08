@@ -15,19 +15,27 @@ body, html {
   z-index: 1;
 }
 
-#photoInput {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
-  background: white;
-  color: black;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 5px;
+.leaflet-popup-content img.thumbnail {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  animation: bubbleGrow 1s ease-out, bubbleFade 2s ease-in 2s forwards;
 }
 
-#photoInput:hover {
-  background: #e0e0e0;
+@keyframes bubbleGrow {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bubbleFade {
+  to {
+    opacity: 0;
+  }
 }
