@@ -14,7 +14,7 @@ const imageData = [
 ];
 
 imageData.forEach(photo => {
-  const imagePath = `images/${photo.name}`;
+  const imagePath = `Images/${photo.name}`;
   const marker = L.marker([photo.lat, photo.lng]).addTo(map);
   marker.bindPopup(`<img class="thumbnail" src="${imagePath}" alt="${photo.name}">`);
 });
